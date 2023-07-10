@@ -15,7 +15,7 @@ const AuthService = {
 
   getUserByEmailId: async (data: any): Promise<any> => {
     try {
-      const response: AxiosResponse = await axios.get(BASE_URL, data);
+      const response: AxiosResponse = await axios.get(BASE_URL);
       const user = response.data.find((user: any) => user.email === data.email);
       return { data: user, status: response.status };
     } catch (er) {
