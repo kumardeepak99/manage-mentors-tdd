@@ -2,8 +2,11 @@ import { useForm } from "react-hook-form";
 import "../../global.css";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../../models/Model";
+import { useDispatch } from "react-redux";
+import { createUser } from "../../store/features/userSlice";
 
 const RegisterPage = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -13,6 +16,7 @@ const RegisterPage = () => {
 
   const onSubmit = handleSubmit((data: any) => {
     console.log(data);
+    dispatch(createUser(data));
     alert("Registered successfully !!");
     navigate("/dashboard");
   });

@@ -1,15 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../headers/Header";
-let user = { name: "Deepak" };
-const MentorDashboardPage: React.FC = () => {
-  const navigate = useNavigate();
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { deleteUser } from "../../store/features/userSlice";
 
-  const handleAddMentor = () => {
-    console.log("Add Mentor Clicked");
-  };
+const MentorDashboardPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.user);
 
   const handleLogout = () => {
+    dispatch(deleteUser());
     navigate("/login");
   };
 

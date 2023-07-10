@@ -2,8 +2,11 @@ import { useForm } from "react-hook-form";
 import "../../global.css";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginData } from "../../models/Model";
+import { createUser } from "../../store/features/userSlice";
+import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -12,7 +15,9 @@ const LoginPage = () => {
   } = useForm<LoginData>();
 
   const onSubmit = handleSubmit((data: any) => {
+    data.name = "Deepak";
     console.log(data);
+    dispatch(createUser(data));
     alert("LoggedIn successfully !!");
     navigate("/dashboard");
   });
