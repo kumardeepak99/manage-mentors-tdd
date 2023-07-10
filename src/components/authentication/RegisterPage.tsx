@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import "../../global.css";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../../models/Model";
+import AuthService from "../../apiServices/AuthService";
 import { useDispatch } from "react-redux";
 import { createUser } from "../../store/features/userSlice";
 
@@ -14,11 +15,21 @@ const RegisterPage = () => {
     formState: { errors },
   } = useForm<User>();
 
-  const onSubmit = handleSubmit((data: any) => {
-    console.log(data);
-    dispatch(createUser(data));
-    alert("Registered successfully !!");
-    navigate("/dashboard");
+  // create user and get user data on user creation succesfully
+  const onSubmit = handleSubmit(async (data: any) => {
+    let req = {
+      name: data.name,
+      email: data.email,
+    };
+    const response = await AuthService.addUser(req);
+    if (response && response.status === 201) {
+      // console.log(response.data);
+      dispatch(createUser(response.data));
+      alert("Registered successfully !!");
+      navigate("/dashboard");
+    } else {
+      alert("Something went wrong while creating user, please try again.");
+    }
   });
 
   return (

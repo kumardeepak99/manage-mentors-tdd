@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LoginData } from "../../models/Model";
 import { createUser } from "../../store/features/userSlice";
 import { useDispatch } from "react-redux";
+import AuthService from "../../apiServices/AuthService";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -14,12 +15,17 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<LoginData>();
 
-  const onSubmit = handleSubmit((data: any) => {
-    data.name = "Deepak";
-    console.log(data);
-    dispatch(createUser(data));
-    alert("LoggedIn successfully !!");
-    navigate("/dashboard");
+  // validate login user and get user data on login successully
+  const onSubmit = handleSubmit(async (data: any) => {
+    const response = await AuthService.getUserByEmailId(data);
+    if (response.data && response.status === 200) {
+      // console.log(response.data);
+      dispatch(createUser(response.data));
+      alert("LoggedIn successfully !!");
+      navigate("/dashboard");
+    } else {
+      alert("Invalid credentials Or user does not exist, please try again.");
+    }
   });
 
   return (
