@@ -1,11 +1,8 @@
 import "./App.css";
+import RouteConstant from "./components/Routes/RouteConstant";
 
-function App() {
-  return (
-    <div className="App">
-      <h1>React POC</h1>
-    </div>
-  );
-}
+const App: React.FC = () => {
+  return <RouteConstant />;
+};
 
 export default App;
