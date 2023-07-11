@@ -1,0 +1,7 @@
+.btn-style {
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin-left: 30px;
+  margin-top: 5px;
+}
