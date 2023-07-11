@@ -1,11 +1,16 @@
+import React from "react";
 import "./App.css";
+import RouteConstant from "./components/Routes/RouteConstant";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <h1>React POC</h1>
-    </div>
+    <React.Fragment>
+      <ToastContainer />
+      <RouteConstant />;
+    </React.Fragment>
   );
-}
+};
 
 export default App;
