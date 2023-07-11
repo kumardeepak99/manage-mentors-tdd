@@ -10,6 +10,7 @@ import {
   Labels,
   LinkPageText,
   Links,
+  TextErrors,
 } from "../../constants/authFroms/AuthenticationText";
 import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
 import { toast } from "react-toastify";
@@ -49,7 +50,7 @@ const RegisterPage = () => {
           type="text"
           className="input"
           {...register("name", {
-            required: "Name is required",
+            required: TextErrors.nameIsRequired,
           })}
         />
         {errors.name && (
@@ -62,10 +63,10 @@ const RegisterPage = () => {
           type="email"
           className="input"
           {...register("email", {
-            required: "Email is required",
+            required: TextErrors.emailIsRequired,
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: "Email should be in format: deepak@example.com",
+              message: TextErrors.invalidEmailFormat,
             },
           })}
         />
@@ -79,16 +80,15 @@ const RegisterPage = () => {
           type="password"
           className="input"
           {...register("password", {
-            required: "Password is required",
+            required: TextErrors.passwordIsRequired,
             minLength: {
               value: 8,
-              message: "Password should be at least 8 characters long",
+              message: TextErrors.passwordLengthError,
             },
             pattern: {
               value:
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-              message:
-                "Password must contain at least 1 number, lowercase, uppercase and special letter",
+              message: TextErrors.passwordTypeError,
             },
           })}
         />
