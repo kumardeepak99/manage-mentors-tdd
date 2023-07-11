@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import ApiService from "./ApiServices";
 
 const BASE_URL = "https://64a8449adca581464b859173.mockapi.io/users";
 
@@ -22,6 +23,12 @@ const AuthService = {
       console.log("Failed to get user");
       throw er;
     }
+  },
+
+  getUserByEmail: async (data: any): Promise<any> => {
+    const response: AxiosResponse = await ApiService.get("users");
+    const user = response.data.find((user: any) => user.email === data.email);
+    return user;
   },
 };
 

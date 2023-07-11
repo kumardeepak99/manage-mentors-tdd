@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "../headers/Header";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { deleteUser } from "../../store/features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import CreateMentor from "../mentor/CreateMentor";
 import { Mentor } from "../../models/Model";
 import MentorService from "../../apiServices/MentorService";
+import Header from "../headers/Header";
+import { useNavigate } from "react-router-dom";
+import { deleteUser } from "../../store/features/userSlice";
 import MentorTable from "../mentor/MentorTable";
+import UpdateMentor from "../mentor/UpdateMentor";
+
+const initialMentorUpdateState = {
+  id: "",
+  firstName: "",
+  lastName: "",
+  age: 0,
+  city: "",
+  about: "",
+};
 
 const MentorDashboardPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
   const [isLoading, setIsLoading] = useState(false);
+  const [showCreateMentorForm, setShowCreateMentorForm] = useState(false);
+  const [showUpdateMentorForm, setShowUpdateMentorForm] = useState(false);
+  const [updateMentorData, setUpdateMentorData] = useState<Mentor>(
+    initialMentorUpdateState
+  );
   const [mentorData, setMentorData] = useState<Mentor[]>([]);
 
   const loadMentorsData = () => {
@@ -26,53 +42,107 @@ const MentorDashboardPage: React.FC = () => {
           "Something went wrong while fetching mentors. Please refresh the page"
         );
         console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-    setIsLoading(false);
   };
 
   useEffect(() => {
     loadMentorsData();
   }, []);
 
+  const handleAddMentor = () => {
+    setShowCreateMentorForm(true);
+  };
+
   const handleLogout = () => {
     dispatch(deleteUser());
     navigate("/login");
   };
 
-  // update mentor using existing mentor data
-  const handleEditMentor = (data: Mentor) => {
-    console.log(data);
+  const handleCreated = () => {
+    loadMentorsData();
+    setShowCreateMentorForm(false);
   };
 
-  // delete mentor based on mentor id
+  const handleCreateCancelled = () => {
+    setShowCreateMentorForm(false);
+  };
+
   const handleDeleteMentor = (id: number) => {
     console.log(id);
     setIsLoading(true);
     MentorService.deleteMentor(id)
       .then((data) => {
         loadMentorsData();
-        alert("Deleted successfully !!");
       })
       .catch((error) => {
-        console.error(error);
         alert("Something went wrong while deleting mentor, please try again.");
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-    setIsLoading(false);
   };
 
-  return (
-    <div>
-      {isLoading && <h1>Loading....</h1>}
-      {!isLoading && <Header userInfo={user} onLogout={handleLogout} />}
-      {!isLoading && mentorData.length > 0 && (
-        <MentorTable
-          data={mentorData}
-          onDeleteMentor={handleDeleteMentor}
-          onEditMentor={handleEditMentor}
+  const handleEditMentor = (data: Mentor) => {
+    setUpdateMentorData(data);
+    setShowUpdateMentorForm(true);
+  };
+
+  const handleMentorUpdated = () => {
+    loadMentorsData();
+    setShowUpdateMentorForm(false);
+  };
+
+  const handleUpdateCancelled = () => {
+    setShowUpdateMentorForm(false);
+  };
+
+  const getCurrentComponent = () => {
+    if (isLoading) {
+      return <h1>Loading....</h1>;
+    }
+    if (showCreateMentorForm) {
+      return (
+        <CreateMentor
+          onCreated={handleCreated}
+          onCancel={handleCreateCancelled}
         />
-      )}
-    </div>
-  );
+      );
+    }
+    if (showUpdateMentorForm) {
+      return (
+        <UpdateMentor
+          mentorData={updateMentorData}
+          onUpdated={handleMentorUpdated}
+          onCancel={handleUpdateCancelled}
+        />
+      );
+    } else {
+      return (
+        <>
+          <Header
+            userInfo={user}
+            onAddMentor={handleAddMentor}
+            onLogout={handleLogout}
+          />
+          {mentorData.length > 0 ? (
+            <MentorTable
+              data={mentorData}
+              onDeleteMentor={handleDeleteMentor}
+              onEditMentor={handleEditMentor}
+            />
+          ) : (
+            <h1>No Mentors data.</h1>
+          )}
+        </>
+      );
+    }
+  };
+
+  return <div>{getCurrentComponent()}</div>;
 };
 
 export default MentorDashboardPage;

@@ -16,10 +16,9 @@ const LoginPage = () => {
   } = useForm<LoginData>();
 
   // validate login user and get user data on login successully
-  const onSubmit = handleSubmit(async (data: any) => {
-    const response = await AuthService.getUserByEmailId(data);
-    if (response.data && response.status === 200) {
-      // console.log(response.data);
+  const onLoginSubmit = handleSubmit(async (data: any) => {
+    const response = await AuthService.getUserByEmail(data); //await AuthService.getUserByEmailId(data);
+    if (response && response.data) {
       dispatch(createUser(response.data));
       alert("LoggedIn successfully !!");
       navigate("/dashboard");
@@ -30,7 +29,7 @@ const LoginPage = () => {
 
   return (
     <div className="container">
-      <form onSubmit={onSubmit} className="form">
+      <form onSubmit={onLoginSubmit} className="form">
         <label htmlFor="email">Email:</label>
         <input
           id="email"
