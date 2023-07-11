@@ -5,6 +5,15 @@ import { User } from "../../models/Model";
 import AuthService from "../../apiServices/AuthService";
 import { useDispatch } from "react-redux";
 import { createUser } from "../../store/features/userSlice";
+import {
+  Buttons,
+  Labels,
+  LinkPageText,
+  Links,
+} from "../../constants/authFroms/AuthenticationText";
+import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
+import { toast } from "react-toastify";
+import { AuthToastConstants } from "../../constants/authFroms/ToastConstants";
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
@@ -16,26 +25,25 @@ const RegisterPage = () => {
   } = useForm<User>();
 
   // create user and get user data on user creation succesfully
-  const onSubmit = handleSubmit(async (data: any) => {
+  const onRegisterClick = handleSubmit(async (data: any) => {
     let req = {
       name: data.name,
       email: data.email,
     };
     const response = await AuthService.addUser(req);
-    if (response && response.status === 201) {
-      // console.log(response.data);
+    if (response && response.status === API_Response_Status.Created) {
       dispatch(createUser(response.data));
-      alert("Registered successfully !!");
+      toast.success(AuthToastConstants.registerSuccess);
       navigate("/dashboard");
     } else {
-      alert("Something went wrong while creating user, please try again.");
+      toast.error(AuthToastConstants.internalServer);
     }
   });
 
   return (
     <div className="container">
-      <form onSubmit={onSubmit} className="form">
-        <label htmlFor="name">Name:</label>
+      <form onSubmit={onRegisterClick} className="form">
+        <label htmlFor="name">{Labels.nameLabel}</label>
         <input
           id="name"
           type="text"
@@ -48,7 +56,7 @@ const RegisterPage = () => {
           <div className="error-message">{errors.name.message}</div>
         )}
 
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="email">{Labels.emailLabel}</label>
         <input
           id="email"
           type="email"
@@ -65,7 +73,7 @@ const RegisterPage = () => {
           <div className="error-message">{errors.email.message}</div>
         )}
 
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password">{Labels.passwordLabel}</label>
         <input
           id="password"
           type="password"
@@ -89,12 +97,12 @@ const RegisterPage = () => {
         )}
 
         <button type="submit" className="button">
-          Register
+          {Buttons.registerButton}
         </button>
         <div>
           <span>
-            Already have an account?
-            <Link to="/login">Login</Link>
+            {LinkPageText.LoginPageText}
+            <Link to="/login">{Links.loginLink}</Link>
           </span>
         </div>
       </form>
