@@ -1,25 +1,25 @@
 import axios, { AxiosResponse } from "axios";
-
-const BASE_URL = "https://64a8449adca581464b859173.mockapi.io/users";
+import { API_URL } from "./ApiServicesConstants";
 
 const AuthService = {
   addUser: async (data: any): Promise<any> => {
     try {
-      const response: AxiosResponse = await axios.post(BASE_URL, data);
-      return { data: response.data, status: response.status };
+      const response: AxiosResponse = await axios.post(
+        API_URL + "/users",
+        data
+      );
+      return { data: response.data, status: response.statusText };
     } catch (er) {
-      console.log("Failed to add user");
       throw er;
     }
   },
 
   getUserByEmailId: async (data: any): Promise<any> => {
     try {
-      const response: AxiosResponse = await axios.get(BASE_URL);
+      const response: AxiosResponse = await axios.get(API_URL + "/users");
       const user = response.data.find((user: any) => user.email === data.email);
-      return { data: user, status: response.status };
+      return { data: user, status: response.statusText };
     } catch (er) {
-      console.log("Failed to get user");
       throw er;
     }
   },
