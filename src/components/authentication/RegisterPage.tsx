@@ -11,7 +11,7 @@ import {
   LinkPageText,
   Links,
   TextErrors,
-} from "../../constants/authFroms/AuthenticationText";
+} from "../../constants/authFroms/AuthenticationTexts";
 import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
 import { toast } from "react-toastify";
 import { AuthToastConstants } from "../../constants/authFroms/ToastConstants";
@@ -32,7 +32,11 @@ const RegisterPage = () => {
       email: data.email,
     };
     const response = await AuthService.addUser(req);
-    if (response && response.status === API_Response_Status.Created) {
+    if (
+      response &&
+      response.data &&
+      response.statusText === API_Response_Status.Created
+    ) {
       dispatch(createUser(response.data));
       toast.success(AuthToastConstants.registerSuccess);
       navigate("/dashboard");

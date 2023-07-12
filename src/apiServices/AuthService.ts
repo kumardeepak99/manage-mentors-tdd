@@ -1,17 +1,20 @@
 import axios, { AxiosResponse } from "axios";
 import { API_URL } from "./ApiServicesConstants";
 
+const BASE_URL = API_URL + "users";
+
+const handleRequest = async (request: Promise<AxiosResponse>): Promise<any> => {
+  try {
+    const response: AxiosResponse = await request;
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const AuthService = {
   addUser: async (data: any): Promise<any> => {
-    try {
-      const response: AxiosResponse = await axios.post(
-        API_URL + "/users",
-        data
-      );
-      return { data: response.data, status: response.statusText };
-    } catch (er) {
-      throw er;
-    }
+    return handleRequest(axios.post(BASE_URL, data));
   },
 
   getUserByEmailId: async (data: any): Promise<any> => {
