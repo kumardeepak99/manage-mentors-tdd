@@ -1,34 +1,30 @@
 import axios, { AxiosResponse } from "axios";
-import ApiService from "./ApiServices";
+import { API_URL } from "./ApiServicesConstants";
 
-const BASE_URL = "https://64a8449adca581464b859173.mockapi.io/users";
+const BASE_URL = API_URL + "users";
+
+const handleRequest = async (request: Promise<AxiosResponse>): Promise<any> => {
+  try {
+    const response: AxiosResponse = await request;
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const AuthService = {
   addUser: async (data: any): Promise<any> => {
-    try {
-      const response: AxiosResponse = await axios.post(BASE_URL, data);
-      return { data: response.data, status: response.status };
-    } catch (er) {
-      console.log("Failed to add user");
-      throw er;
-    }
+    return handleRequest(axios.post(BASE_URL, data));
   },
 
   getUserByEmailId: async (data: any): Promise<any> => {
     try {
-      const response: AxiosResponse = await axios.get(BASE_URL);
+      const response: AxiosResponse = await axios.get(API_URL + "/users");
       const user = response.data.find((user: any) => user.email === data.email);
-      return { data: user, status: response.status };
+      return { data: user, status: response.statusText };
     } catch (er) {
-      console.log("Failed to get user");
       throw er;
     }
-  },
-
-  getUserByEmail: async (data: any): Promise<any> => {
-    const response: AxiosResponse = await ApiService.get("users");
-    const user = response.data.find((user: any) => user.email === data.email);
-    return user;
   },
 };
 

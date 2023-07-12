@@ -1,14 +1,28 @@
 import "@testing-library/jest-dom/extend-expect";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { AuthenticationTestConstants } from "../../../__utils__/TestConstants";
 import userEvent from "@testing-library/user-event";
 import { AuthenticationFakeData } from "../../../__fixture__/auth/authentication";
 import RegisterPage from "../../../../components/authentication/RegisterPage";
+import {
+  Buttons,
+  Labels,
+  LinkPageText,
+  Links,
+  TextErrors,
+} from "../../../__utils__/TestConstants";
+import { toast } from "react-toastify";
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: jest.fn(),
+}));
+
+jest.mock("react-toastify", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
 }));
 
 jest.mock("react-redux", () => ({
@@ -29,45 +43,37 @@ describe("Register Page component", () => {
   });
 
   it("should have a name field", () => {
-    const nameElement = screen.getByLabelText(
-      AuthenticationTestConstants.nameLabel
-    );
+    const nameElement = screen.getByLabelText(Labels.nameLabel);
 
     expect(nameElement).toBeInTheDocument();
   });
 
   it("should have an email input field", () => {
-    const emailElement = screen.getByLabelText(
-      AuthenticationTestConstants.emailLabel
-    );
+    const emailElement = screen.getByLabelText(Labels.emailLabel);
 
     expect(emailElement).toBeInTheDocument();
   });
 
   it("should have a password input field", () => {
-    const passwordElement = screen.getByLabelText(
-      AuthenticationTestConstants.passwordLabel
-    );
+    const passwordElement = screen.getByLabelText(Labels.passwordLabel);
     expect(passwordElement).toBeInTheDocument();
   });
 
   it("should have a register button", () => {
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
     expect(registerButtonElement).toBeInTheDocument();
   });
 
   it("should have text for login page", () => {
-    const loginText = screen.getByText(
-      AuthenticationTestConstants.LoginPageText
-    );
+    const loginText = screen.getByText(LinkPageText.LoginPageText);
     expect(loginText).toBeInTheDocument();
   });
 
   it("should renders a link to login page", () => {
     const loginLink = screen.getByRole("link", {
-      name: AuthenticationTestConstants.loginLink,
+      name: Links.loginLink,
     });
 
     expect(loginLink).toBeInTheDocument();
@@ -84,13 +90,11 @@ describe("Name validation", () => {
   });
   it("should display 'Name is required' when name is not provided", async () => {
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
 
     await userEvent.click(registerButtonElement);
-    const nameErrorElement = await screen.findByText(
-      AuthenticationTestConstants.nameIsRequired
-    );
+    const nameErrorElement = await screen.findByText(TextErrors.nameIsRequired);
     expect(nameErrorElement).toBeInTheDocument();
   });
 });
@@ -105,28 +109,26 @@ describe("Email validation", () => {
 
   it("should display 'Email is required' when email is not provided", async () => {
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
     await act(async () => {
       userEvent.click(registerButtonElement);
     });
     const emailErrorElement = await screen.findByText(
-      AuthenticationTestConstants.emailIsRequired
+      TextErrors.emailIsRequired
     );
     expect(emailErrorElement).toBeInTheDocument();
   });
 
   it("shoud display an error for invalid email format", async () => {
-    const emailElement = screen.getByLabelText(
-      AuthenticationTestConstants.emailLabel
-    );
+    const emailElement = screen.getByLabelText(Labels.emailLabel);
 
     fireEvent.change(emailElement, {
       target: { value: AuthenticationFakeData.invalidEmail },
     });
 
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
 
     await act(async () => {
@@ -134,7 +136,7 @@ describe("Email validation", () => {
     });
 
     const emailErrorElement = await screen.findByText(
-      AuthenticationTestConstants.invalidEmailFormat
+      TextErrors.invalidEmailFormat
     );
     expect(emailErrorElement).toBeInTheDocument();
   });
@@ -150,28 +152,26 @@ describe("Password validation", () => {
 
   it("should display 'Password is required' when password is not provided", async () => {
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
     await act(async () => {
       userEvent.click(registerButtonElement);
     });
     const emailErrorElement = await screen.findByText(
-      AuthenticationTestConstants.passwordIsRequired
+      TextErrors.passwordIsRequired
     );
     expect(emailErrorElement).toBeInTheDocument();
   });
 
   it("shoud display an error when password is less than 8 characters", async () => {
-    const passwordElement = screen.getByLabelText(
-      AuthenticationTestConstants.passwordLabel
-    );
+    const passwordElement = screen.getByLabelText(Labels.passwordLabel);
 
     fireEvent.change(passwordElement, {
       target: { value: AuthenticationFakeData.shortPassword },
     });
 
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
 
     await act(async () => {
@@ -179,22 +179,20 @@ describe("Password validation", () => {
     });
 
     const passwordErrorElement = await screen.findByText(
-      AuthenticationTestConstants.passwordLengthError
+      TextErrors.passwordLengthError
     );
     expect(passwordErrorElement).toBeInTheDocument();
   });
 
   it("shoud display an error when password does not follow specified format", async () => {
-    const passwordElement = screen.getByLabelText(
-      AuthenticationTestConstants.passwordLabel
-    );
+    const passwordElement = screen.getByLabelText(Labels.passwordLabel);
 
     fireEvent.change(passwordElement, {
       target: { value: AuthenticationFakeData.invalidPassword },
     });
 
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
 
     await act(async () => {
@@ -202,7 +200,7 @@ describe("Password validation", () => {
     });
 
     const passwordErrorElement = await screen.findByText(
-      AuthenticationTestConstants.passwordTypeError
+      TextErrors.passwordTypeError
     );
     expect(passwordErrorElement).toBeInTheDocument();
   });
@@ -221,66 +219,60 @@ describe("form with valid name, email and password should not have any error", (
 
   it("should not display name related error", () => {
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
 
     userEvent.click(registerButtonElement);
 
-    const nameErrorElement = screen.queryByText(
-      AuthenticationTestConstants.nameIsRequired
-    );
+    const nameErrorElement = screen.queryByText(TextErrors.nameIsRequired);
     expect(nameErrorElement).not.toBeInTheDocument();
   });
 
   it("shoud not display any email related error", () => {
-    const emailElement = screen.getByLabelText(
-      AuthenticationTestConstants.emailLabel
-    );
+    const emailElement = screen.getByLabelText(Labels.emailLabel);
 
     fireEvent.change(emailElement, {
       target: { value: "Deepak@gamil.com" },
     });
 
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
 
     userEvent.click(registerButtonElement);
 
     const emailIsRequiredErrorElement = screen.queryByText(
-      AuthenticationTestConstants.emailIsRequired
+      TextErrors.emailIsRequired
     );
 
     const invalidEmailFormatErrorElement = screen.queryByText(
-      AuthenticationTestConstants.invalidEmailFormat
+      TextErrors.invalidEmailFormat
     );
     expect(emailIsRequiredErrorElement).not.toBeInTheDocument();
     expect(invalidEmailFormatErrorElement).not.toBeInTheDocument();
   });
 
   it("shoud not display any password related error", async () => {
-    const passwordElement = screen.getByLabelText(
-      AuthenticationTestConstants.passwordLabel
-    );
+    const passwordElement = screen.getByLabelText(Labels.passwordLabel);
     fireEvent.change(passwordElement, {
       target: { value: "Deepak@123456" },
     });
 
     const registerButtonElement = screen.getByRole("button", {
-      name: AuthenticationTestConstants.registerButton,
+      name: Buttons.registerButton,
     });
 
     act(() => userEvent.click(registerButtonElement));
 
     const passwordIsRequiredErrorElement = screen.queryByText(
-      AuthenticationTestConstants.passwordIsRequired
+      TextErrors.passwordIsRequired
     );
     const passwordLengthErrorElement = screen.queryByText(
-      AuthenticationTestConstants.passwordLengthError
+      TextErrors.passwordLengthError
     );
 
     const passwordTypeErrorElement = screen.queryByText(
-      AuthenticationTestConstants.passwordTypeError
+      TextErrors.passwordTypeError
     );
     expect(passwordIsRequiredErrorElement).not.toBeInTheDocument();
     expect(passwordLengthErrorElement).not.toBeInTheDocument();

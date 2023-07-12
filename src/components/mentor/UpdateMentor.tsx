@@ -1,6 +1,9 @@
 import { useForm } from "react-hook-form";
 import { Mentor } from "../../models/Model";
 import MentorService from "../../apiServices/MentorService";
+import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
+import { MentorToastConstants } from "../../constants/mentorFeatures/AuthToastConstants";
+import { toast } from "react-toastify";
 
 interface UpdateMentorProps {
   mentorData: Mentor;
@@ -32,11 +35,15 @@ const UpdateMentor: React.FC<UpdateMentorProps> = ({
 
   const onSubmit = handleSubmit(async (data: Mentor) => {
     const response = await MentorService.updateMentor(data);
-    if (response) {
-      alert("Mentors updated successfully !!");
+    if (
+      response &&
+      response.data &&
+      response.statusText === API_Response_Status.OK
+    ) {
+      toast.success(MentorToastConstants.mentorUpdateSuccess);
       onUpdated();
     } else {
-      alert("Something went wrong while updating mentor, please try again!!");
+      toast.error(MentorToastConstants.internalServer);
     }
   });
 

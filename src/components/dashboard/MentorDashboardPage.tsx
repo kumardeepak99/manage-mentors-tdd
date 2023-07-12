@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { deleteUser } from "../../store/features/userSlice";
 import MentorTable from "../mentor/MentorTable";
 import UpdateMentor from "../mentor/UpdateMentor";
+import { toast } from "react-toastify";
+import { MentorToastConstants } from "../../constants/mentorFeatures/AuthToastConstants";
 
 const initialMentorUpdateState = {
   id: "",
@@ -34,13 +36,11 @@ const MentorDashboardPage: React.FC = () => {
   const loadMentorsData = () => {
     setIsLoading(true);
     MentorService.getMentor()
-      .then((data) => {
-        setMentorData(data);
+      .then((response) => {
+        setMentorData(response.data);
       })
       .catch((error) => {
-        alert(
-          "Something went wrong while fetching mentors. Please refresh the page"
-        );
+        toast.error(MentorToastConstants.internalServer);
         console.error(error);
       })
       .finally(() => {
@@ -75,10 +75,11 @@ const MentorDashboardPage: React.FC = () => {
     setIsLoading(true);
     MentorService.deleteMentor(id)
       .then((data) => {
+        toast.success(MentorToastConstants.mentorDeleteSuccess);
         loadMentorsData();
       })
       .catch((error) => {
-        alert("Something went wrong while deleting mentor, please try again.");
+        toast.error(MentorToastConstants.internalServer);
         console.error(error);
       })
       .finally(() => {

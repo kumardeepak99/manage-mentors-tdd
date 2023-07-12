@@ -1,6 +1,9 @@
 import { useForm } from "react-hook-form";
 import { Mentor } from "../../models/Model";
 import MentorService from "../../apiServices/MentorService";
+import { toast } from "react-toastify";
+import { MentorToastConstants } from "../../constants/mentorFeatures/AuthToastConstants";
+import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
 
 interface CreateMentorProps {
   onCreated: () => void;
@@ -16,11 +19,15 @@ const CreateMentor: React.FC<CreateMentorProps> = ({ onCreated, onCancel }) => {
 
   const onCreateMentorSubmit = handleSubmit(async (data: Mentor) => {
     const response = await MentorService.addMentor(data);
-    if (response) {
-      alert("Mentors added successfully !!");
+    if (
+      response &&
+      response.data &&
+      response.statusText === API_Response_Status.Created
+    ) {
+      toast.success(MentorToastConstants.mentorCreateSuccess);
       onCreated();
     } else {
-      alert("Something went wrong while creating mentor, please try again.");
+      toast.error(MentorToastConstants.internalServer);
     }
   });
 

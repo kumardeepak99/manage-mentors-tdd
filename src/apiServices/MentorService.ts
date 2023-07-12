@@ -1,60 +1,38 @@
 import axios, { AxiosResponse } from "axios";
+import { API_URL } from "./ApiServicesConstants";
 
-const BASE_URL = "https://64a8449adca581464b859173.mockapi.io/mentors";
+const BASE_URL = API_URL + "mentors";
+
+const handleRequest = async (request: Promise<AxiosResponse>): Promise<any> => {
+  try {
+    const response: AxiosResponse = await request;
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const MentorService = {
   addMentor: async (data: any): Promise<any> => {
-    try {
-      const response: AxiosResponse = await axios.post(BASE_URL, data);
-      return response.data;
-    } catch (er) {
-      console.log("Failed to add mentor");
-      throw er;
-    }
+    return handleRequest(axios.post(BASE_URL, data));
   },
 
   getMentor: async (): Promise<any> => {
-    try {
-      const response: AxiosResponse = await axios.get(BASE_URL);
-      return response.data;
-    } catch (er) {
-      console.log("Failed to get user");
-      throw er;
-    }
+    return handleRequest(axios.get(BASE_URL));
   },
 
   getMentorById: async (data: any): Promise<any> => {
-    try {
-      const response: AxiosResponse = await axios.get(
-        BASE_URL + `/${data.id}`,
-        data
-      );
-      return response.data;
-    } catch (er) {
-      console.log("Failed to get mentor");
-      throw er;
-    }
+    return handleRequest(axios.get(BASE_URL + `/${data.id}`, data));
   },
+
   updateMentor: async (data: any): Promise<any> => {
-    try {
-      const response: AxiosResponse = await axios.put(
-        BASE_URL + `/${data.id}`,
-        data
-      );
-      return { data: response.data, status: response.status };
-    } catch (er) {
-      console.log("Failed to update mentor");
-      throw er;
-    }
+    const url = BASE_URL + `/${data.id}`;
+    return handleRequest(axios.put(url, data));
   },
+
   deleteMentor: async (id: any): Promise<any> => {
-    try {
-      const response: AxiosResponse = await axios.delete(BASE_URL + `/${id}`);
-      return response.data;
-    } catch (er) {
-      console.log("Failed to delete mentor");
-      throw er;
-    }
+    const url = BASE_URL + `/${id}`;
+    return handleRequest(axios.delete(url));
   },
 };
 

@@ -5,6 +5,16 @@ import { User } from "../../models/Model";
 import AuthService from "../../apiServices/AuthService";
 import { useDispatch } from "react-redux";
 import { createUser } from "../../store/features/userSlice";
+import {
+  Buttons,
+  Labels,
+  LinkPageText,
+  Links,
+  TextErrors,
+} from "../../constants/authFroms/AuthenticationText";
+import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
+import { toast } from "react-toastify";
+import { AuthToastConstants } from "../../constants/authFroms/ToastConstants";
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
@@ -16,48 +26,51 @@ const RegisterPage = () => {
   } = useForm<User>();
 
   // create user and get user data on user creation succesfully
-  const onSubmit = handleSubmit(async (data: any) => {
+  const onRegisterClick = handleSubmit(async (data: any) => {
     let req = {
       name: data.name,
       email: data.email,
     };
     const response = await AuthService.addUser(req);
-    if (response && response.status === 201) {
-      // console.log(response.data);
+    if (
+      response &&
+      response.data &&
+      response.statusText === API_Response_Status.Created
+    ) {
       dispatch(createUser(response.data));
-      alert("Registered successfully !!");
+      toast.success(AuthToastConstants.registerSuccess);
       navigate("/dashboard");
     } else {
-      alert("Something went wrong while creating user, please try again.");
+      toast.error(AuthToastConstants.internalServer);
     }
   });
 
   return (
     <div className="container">
-      <form onSubmit={onSubmit} className="form">
-        <label htmlFor="name">Name:</label>
+      <form onSubmit={onRegisterClick} className="form">
+        <label htmlFor="name">{Labels.nameLabel}</label>
         <input
           id="name"
           type="text"
           className="input"
           {...register("name", {
-            required: "Name is required",
+            required: TextErrors.nameIsRequired,
           })}
         />
         {errors.name && (
           <div className="error-message">{errors.name.message}</div>
         )}
 
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="email">{Labels.emailLabel}</label>
         <input
           id="email"
           type="email"
           className="input"
           {...register("email", {
-            required: "Email is required",
+            required: TextErrors.emailIsRequired,
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: "Email should be in format: deepak@example.com",
+              message: TextErrors.invalidEmailFormat,
             },
           })}
         />
@@ -65,22 +78,21 @@ const RegisterPage = () => {
           <div className="error-message">{errors.email.message}</div>
         )}
 
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password">{Labels.passwordLabel}</label>
         <input
           id="password"
           type="password"
           className="input"
           {...register("password", {
-            required: "Password is required",
+            required: TextErrors.passwordIsRequired,
             minLength: {
               value: 8,
-              message: "Password should be at least 8 characters long",
+              message: TextErrors.passwordLengthError,
             },
             pattern: {
               value:
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-              message:
-                "Password must contain at least 1 number, lowercase, uppercase and special letter",
+              message: TextErrors.passwordTypeError,
             },
           })}
         />
@@ -89,12 +101,12 @@ const RegisterPage = () => {
         )}
 
         <button type="submit" className="button">
-          Register
+          {Buttons.registerButton}
         </button>
         <div>
           <span>
-            Already have an account?
-            <Link to="/login">Login</Link>
+            {LinkPageText.LoginPageText}
+            <Link to="/login">{Links.loginLink}</Link>
           </span>
         </div>
       </form>
