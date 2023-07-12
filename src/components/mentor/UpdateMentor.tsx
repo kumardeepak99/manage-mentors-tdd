@@ -4,6 +4,11 @@ import MentorService from "../../apiServices/MentorService";
 import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
 import { MentorToastConstants } from "../../constants/mentorFeatures/AuthToastConstants";
 import { toast } from "react-toastify";
+import {
+  Buttons,
+  Labels,
+  TextErrors,
+} from "../../constants/mentorFeatures/MentorTexts";
 
 interface UpdateMentorProps {
   mentorData: Mentor;
@@ -33,7 +38,7 @@ const UpdateMentor: React.FC<UpdateMentorProps> = ({
     formState: { errors },
   } = methods;
 
-  const onSubmit = handleSubmit(async (data: Mentor) => {
+  const onUpdateClicked = handleSubmit(async (data: Mentor) => {
     const response = await MentorService.updateMentor(data);
     if (
       response &&
@@ -49,39 +54,39 @@ const UpdateMentor: React.FC<UpdateMentorProps> = ({
 
   return (
     <div className="container">
-      <form onSubmit={onSubmit} className="form">
-        <label htmlFor="firstName">First Name:</label>
+      <form onSubmit={onUpdateClicked} className="form">
+        <label htmlFor="firstName">{Labels.firstNameLabel}</label>
         <input
           id="firstName"
           type="text"
           className="input"
           {...register("firstName", {
-            required: "First name is required",
+            required: TextErrors.firstNameIsRequired,
           })}
         />
         {errors.firstName && (
           <div className="error-message">{errors.firstName.message}</div>
         )}
 
-        <label htmlFor="lastName">Last Name:</label>
+        <label htmlFor="lastName">{Labels.lastNameLabel}</label>
         <input
           id="lastName"
           type="text"
           className="input"
           {...register("lastName", {
-            required: "Last name is required",
+            required: TextErrors.lastNameIsRequired,
           })}
         />
         {errors.lastName && (
           <div className="error-message">{errors.lastName.message}</div>
         )}
-        <label htmlFor="age">Age:</label>
+        <label htmlFor="age">{Labels.ageLabel}</label>
         <input
           id="age"
           type="number"
           className="input"
           {...register("age", {
-            required: "Age can not be empty",
+            required: TextErrors.ageIsRequired,
             min: 18,
             max: 100,
           })}
@@ -89,32 +94,32 @@ const UpdateMentor: React.FC<UpdateMentorProps> = ({
         {errors.age && (
           <div className="error-message">{errors.age.message}</div>
         )}
-        <label htmlFor="city">City:</label>
+        <label htmlFor="city">{Labels.cityLabel}</label>
         <input
           id="city"
           type="text"
           className="input"
           {...register("city", {
-            required: "City is required",
+            required: TextErrors.cityIsRequired,
           })}
         />
         {errors.city && (
           <div className="error-message">{errors.city.message}</div>
         )}
-        <label htmlFor="about">About:</label>
+        <label htmlFor="about">{Labels.aboutLabel}</label>
         <input
           id="about"
           type="text"
           className="input"
           {...register("about", {
-            required: "About is required",
+            required: TextErrors.aboutIsRequired,
             minLength: {
               value: 10,
-              message: "About should be at least 10 characters long",
+              message: TextErrors.aboutMinLengthIsRequired,
             },
             maxLength: {
               value: 200,
-              message: "About can be at max 200 characters long",
+              message: TextErrors.aboutMaxLengthIsRequired,
             },
           })}
         />
@@ -122,10 +127,10 @@ const UpdateMentor: React.FC<UpdateMentorProps> = ({
           <div className="error-message">{errors.about.message}</div>
         )}
         <button type="submit" className="button">
-          Update
+          {Buttons.updateButton}
         </button>
         <button type="submit" onClick={onCancel} className="button">
-          Cancel
+          {Buttons.cancelButton}
         </button>
       </form>
     </div>

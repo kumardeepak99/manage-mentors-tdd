@@ -25,6 +25,7 @@ import {
 } from "@tanstack/match-sorter-utils";
 import "./MentorTable.css";
 import { Mentor } from "../../models/Model";
+import { Buttons } from "../../constants/mentorFeatures/MentorTexts";
 
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -129,13 +130,13 @@ const MentorTable: React.FC<MentorProps> = ({
             cell: (props) => (
               <div>
                 <button className="btn-style" onClick={() => handleEdit(props)}>
-                  Edit
+                  {Buttons.updateButton}
                 </button>
                 <button
                   className="btn-style"
                   onClick={() => handleDelete(props)}
                 >
-                  Delete
+                  {Buttons.deleteButton}
                 </button>
               </div>
             ),

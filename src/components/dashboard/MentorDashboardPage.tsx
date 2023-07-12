@@ -11,6 +11,8 @@ import MentorTable from "../mentor/MentorTable";
 import UpdateMentor from "../mentor/UpdateMentor";
 import { toast } from "react-toastify";
 import { MentorToastConstants } from "../../constants/mentorFeatures/AuthToastConstants";
+import { DataResultText } from "../../constants/mentorFeatures/MentorTexts";
+import "../../global.css";
 
 const initialMentorUpdateState = {
   id: "",
@@ -103,7 +105,7 @@ const MentorDashboardPage: React.FC = () => {
 
   const getCurrentComponent = () => {
     if (isLoading) {
-      return <h1>Loading....</h1>;
+      return <h1 className="text-center">{DataResultText.loading}</h1>;
     }
     if (showCreateMentorForm) {
       return (
@@ -136,7 +138,7 @@ const MentorDashboardPage: React.FC = () => {
               onEditMentor={handleEditMentor}
             />
           ) : (
-            <h1>No Mentors data.</h1>
+            <h1 className="text-center">{DataResultText.noData}</h1>
           )}
         </>
       );

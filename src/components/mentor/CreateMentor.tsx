@@ -4,7 +4,11 @@ import MentorService from "../../apiServices/MentorService";
 import { toast } from "react-toastify";
 import { MentorToastConstants } from "../../constants/mentorFeatures/AuthToastConstants";
 import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
-
+import {
+  Buttons,
+  Labels,
+  TextErrors,
+} from "../../constants/mentorFeatures/MentorTexts";
 interface CreateMentorProps {
   onCreated: () => void;
   onCancel: () => void;
@@ -17,7 +21,7 @@ const CreateMentor: React.FC<CreateMentorProps> = ({ onCreated, onCancel }) => {
     formState: { errors },
   } = useForm<Mentor>();
 
-  const onCreateMentorSubmit = handleSubmit(async (data: Mentor) => {
+  const onCreateClicked = handleSubmit(async (data: Mentor) => {
     const response = await MentorService.addMentor(data);
     if (
       response &&
@@ -30,42 +34,41 @@ const CreateMentor: React.FC<CreateMentorProps> = ({ onCreated, onCancel }) => {
       toast.error(MentorToastConstants.internalServer);
     }
   });
-
   return (
     <div className="container">
-      <form onSubmit={onCreateMentorSubmit} className="form">
-        <label htmlFor="firstName">First Name:</label>
+      <form onSubmit={onCreateClicked} className="form">
+        <label htmlFor="firstName">{Labels.firstNameLabel}</label>
         <input
           id="firstName"
           type="text"
           className="input"
           {...register("firstName", {
-            required: "First name is required",
+            required: TextErrors.firstNameIsRequired,
           })}
         />
         {errors.firstName && (
           <div className="error-message">{errors.firstName.message}</div>
         )}
 
-        <label htmlFor="lastName">Last Name:</label>
+        <label htmlFor="lastName">{Labels.lastNameLabel}</label>
         <input
           id="lastName"
           type="text"
           className="input"
           {...register("lastName", {
-            required: "Last name is required",
+            required: TextErrors.lastNameIsRequired,
           })}
         />
         {errors.lastName && (
           <div className="error-message">{errors.lastName.message}</div>
         )}
-        <label htmlFor="age">Age:</label>
+        <label htmlFor="age">{Labels.ageLabel}</label>
         <input
           id="age"
           type="number"
           className="input"
           {...register("age", {
-            required: "Age is required",
+            required: TextErrors.ageIsRequired,
             min: 18,
             max: 100,
           })}
@@ -73,32 +76,32 @@ const CreateMentor: React.FC<CreateMentorProps> = ({ onCreated, onCancel }) => {
         {errors.age && (
           <div className="error-message">{errors.age.message}</div>
         )}
-        <label htmlFor="city">City:</label>
+        <label htmlFor="city">{Labels.cityLabel}</label>
         <input
           id="city"
           type="text"
           className="input"
           {...register("city", {
-            required: "City is required",
+            required: TextErrors.cityIsRequired,
           })}
         />
         {errors.city && (
           <div className="error-message">{errors.city.message}</div>
         )}
-        <label htmlFor="about">About:</label>
+        <label htmlFor="about">{Labels.aboutLabel}</label>
         <input
           id="about"
           type="text"
           className="input"
           {...register("about", {
-            required: "About is required",
+            required: TextErrors.aboutIsRequired,
             minLength: {
               value: 10,
-              message: "About should be at least 10 characters long",
+              message: TextErrors.aboutMinLengthIsRequired,
             },
             maxLength: {
               value: 200,
-              message: "About can be at max 200 characters long",
+              message: TextErrors.aboutMaxLengthIsRequired,
             },
           })}
         />
@@ -106,10 +109,10 @@ const CreateMentor: React.FC<CreateMentorProps> = ({ onCreated, onCancel }) => {
           <div className="error-message">{errors.about.message}</div>
         )}
         <button type="submit" className="button">
-          Create
+          {Buttons.createButton}
         </button>
         <button type="submit" onClick={onCancel} className="button">
-          Cancel
+          {Buttons.cancelButton}
         </button>
       </form>
     </div>

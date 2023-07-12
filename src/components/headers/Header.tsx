@@ -1,5 +1,6 @@
 import React from "react";
 import "./Header.css";
+import { Buttons } from "../../constants/mentorFeatures/MentorTexts";
 
 interface HeaderProps {
   userInfo: any;
@@ -16,10 +17,10 @@ const Header: React.FC<HeaderProps> = ({ userInfo, onLogout, onAddMentor }) => {
 
       <div className="right">
         <button className="button" onClick={onAddMentor}>
-          Create
+          {Buttons.createButton}
         </button>
         <button className="button" onClick={onLogout}>
-          Logout
+          {Buttons.logoutButton}
         </button>
       </div>
     </header>

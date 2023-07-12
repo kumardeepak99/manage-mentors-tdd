@@ -11,7 +11,7 @@ import {
   LinkPageText,
   Links,
   TextErrors,
-} from "../../constants/authFroms/AuthenticationText";
+} from "../../constants/authFroms/AuthenticationTexts";
 import { API_Response_Status } from "../../apiServices/ApiServicesConstants";
 import { toast } from "react-toastify";
 import { AuthToastConstants } from "../../constants/authFroms/ToastConstants";
